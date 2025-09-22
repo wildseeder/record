@@ -22,7 +22,7 @@ class RecorderStreamDelegate: NSObject, AudioRecordingStreamDelegate {
     let audioEngine = AVAudioEngine()
 
     try initAVAudioSession(config: config, manageAudioSession: manageAudioSession)
-    try setVoiceProcessing(echoCancel: config.echoCancel, autoGain: config.autoGain, audioEngine: audioEngine)
+    // try setVoiceProcessing(echoCancel: config.echoCancel, autoGain: config.autoGain, audioEngine: audioEngine)
     
     let srcFormat = audioEngine.inputNode.inputFormat(forBus: 0)
     

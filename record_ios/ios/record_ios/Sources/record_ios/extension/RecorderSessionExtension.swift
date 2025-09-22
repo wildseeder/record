@@ -19,7 +19,7 @@ extension AudioRecordingDelegate {
         throw RecorderError.error(message: "Failed to start recording", details: "setPrefersNoInterruptionsFromSystemAlerts: \(error.localizedDescription)")
       }
     }
-    
+
     if manage {
       do {
           try audioSession.setCategory(.playAndRecord, options: AVAudioSession.CategoryOptions(config.iosConfig.categoryOptions))
@@ -31,6 +31,14 @@ extension AudioRecordingDelegate {
         try audioSession.setActive(true, options: .notifyOthersOnDeactivation) // Must be done before setting channels and others
       } catch {
         throw RecorderError.error(message: "Failed to start recording", details: "setActive: \(error.localizedDescription)")
+      }
+
+      if #available(iOS 13.0, *) {
+        do {
+          try audioSession.setAllowHapticsAndSystemSoundsDuringRecording(true)
+        } catch {
+          throw RecorderError.error(message: "Failed to start recording", details: "setAllowHapticsAndSystemSoundsDuringRecording: \(error.localizedDescription)")
+        }
       }
     }
     

@@ -10,7 +10,6 @@ dev_dependencies:
 
 workspace:
   - record
-  - record/example
   - record_android
   - record_ios
   - record_macos

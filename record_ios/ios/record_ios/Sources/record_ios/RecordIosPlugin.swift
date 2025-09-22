@@ -66,56 +66,68 @@ public class RecordIosPlugin: NSObject, FlutterPlugin {
     
     switch call.method {
     case "start":
-      guard let path = args["path"] as? String else  {
-        result(FlutterError(code: "record", message: "Call missing mandatory parameter path.", details: nil))
-        return
-      }
-      
-      guard let config = getConfig(args, result: result) else {
-        return
-      }
-      
-      do {
-        try recorder.start(config: config, path: path)
-        result(nil)
-      } catch RecorderError.error(let message, let details) {
-        result(FlutterError(code: "record", message: message, details: details))
-      } catch {
-        result(FlutterError(code: "record", message: error.localizedDescription, details: nil))
+      Task {
+        guard let path = args["path"] as? String else  {
+          result(FlutterError(code: "record", message: "Call missing mandatory parameter path.", details: nil))
+          return
+        }
+        
+        guard let config = getConfig(args, result: result) else {
+          return
+        }
+        
+        do {
+          try recorder.start(config: config, path: path)
+          result(nil)
+        } catch RecorderError.error(let message, let details) {
+          result(FlutterError(code: "record", message: message, details: details))
+        } catch {
+          result(FlutterError(code: "record", message: error.localizedDescription, details: nil))
+        }
       }
     case "startStream":
-      guard let config = getConfig(args, result: result) else {
-        return
-      }
+      Task {
+        guard let config = getConfig(args, result: result) else {
+          return
+        }
 
-      do {
-        try recorder.startStream(config: config)
-        result(nil)
-      } catch RecorderError.error(let message, let details) {
-        result(FlutterError(code: "record", message: message, details: details))
-      } catch {
-        result(FlutterError(code: "record", message: error.localizedDescription, details: nil))
+        do {
+          try recorder.startStream(config: config)
+          result(nil)
+        } catch RecorderError.error(let message, let details) {
+          result(FlutterError(code: "record", message: message, details: details))
+        } catch {
+          result(FlutterError(code: "record", message: error.localizedDescription, details: nil))
+        }
       }
     case "stop":
-      recorder.stop { path in
-        result(path)
+      Task {
+        recorder.stop { path in
+          result(path)
+        }
       }
     case "cancel":
-      do {
-        try recorder.cancel()
-        result(nil)
-      } catch {
-        result(FlutterError(code: "record", message: error.localizedDescription, details: nil))
+      Task {
+        do {
+          try recorder.cancel()
+          result(nil)
+        } catch {
+          result(FlutterError(code: "record", message: error.localizedDescription, details: nil))
+        }
       }
     case "pause":
-      recorder.pause()
-      result(nil)
-    case "resume":
-      do {
-        try recorder.resume()
+      Task {
+        recorder.pause()
         result(nil)
-      } catch {
-        result(FlutterError(code: "record", message: error.localizedDescription, details: nil))
+      }
+    case "resume":
+      Task {
+        do {
+          try recorder.resume()
+          result(nil)
+        } catch {
+          result(FlutterError(code: "record", message: error.localizedDescription, details: nil))
+        }
       }
     case "isPaused":
       let isPaused = recorder.isPaused()
